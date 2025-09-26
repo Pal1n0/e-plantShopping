@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
+import { useSelector, useDispatch } from 'react-redux';
 import CartItem from './CartItem';
-import addItem from './CartSlice';
+import { addItem } from './CartSlice';
+
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
+    const cart = useSelector(state => state.cart.items);
+    const getCartItemCount = () => {
+        return cart.reduce((total, item) => total + item.quantity, 0);
+      };
 
     const plantsArray = [
         {
@@ -219,13 +225,14 @@ function ProductList({ onHomeClick }) {
         color: '#fff!important',
         padding: '15px',
         display: 'flex',
+        marginBottom: '20px',
         justifyContent: 'space-between',
         alignIems: 'center',
         fontSize: '20px',
     }
     const styleObjUl = {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         width: '1100px',
     }
@@ -234,6 +241,14 @@ function ProductList({ onHomeClick }) {
         fontSize: '30px',
         textDecoration: 'none',
     }
+
+    const stylePlantsWrapper = {
+        position: 'absolute',
+        left: '50%',
+        transform: 'translateX(-50%)'
+    }
+
+    const dispatch = useDispatch();
 
     const handleHomeClick = (e) => {
         e.preventDefault();
@@ -253,16 +268,17 @@ function ProductList({ onHomeClick }) {
     const handleContinueShopping = (e) => {
         e.preventDefault();
         setShowCart(false);
+    };
 
     const handleAddToCart = (plant) => {
-        dispatchEvent(addItem(product));
+        dispatch(addItem(plant));
 
         setAddedToCart((prevState) => ({
-            ...prevState, [product.name]: true,
+            ...prevState, [plant.name]: true,
         }));
     };
         
-    };
+    
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -271,17 +287,38 @@ function ProductList({ onHomeClick }) {
                         <img src="https://cdn.pixabay.com/photo/2020/08/05/13/12/eco-5465432_1280.png" alt="" />
                         <a href="/" onClick={(e) => handleHomeClick(e)}>
                             <div>
-                                <h3 style={{ color: 'white' }}>Paradise Nursery</h3>
-                                <i style={{ color: 'white' }}>Where Green Meets Serenity</i>
+                            <h3 style={{ color: 'white', paddingLeft: '10px' }}>Paradise Nursery</h3>
+                            <i style={{ color: 'white', paddingLeft: '10px' }}>Where Green Meets Serenity</i>
                             </div>
                         </a>
                     </div>
 
                 </div>
                 <div style={styleObjUl}>
-                    <div> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
-                    <div> <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}><h1 className='cart'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68"><rect width="156" height="156" fill="none"></rect><circle cx="80" cy="216" r="12"></circle><circle cx="184" cy="216" r="12"></circle><path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path></svg></h1></a></div>
-                </div>
+                    <div style={stylePlantsWrapper}> <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>Plants</a></div>
+                    <div style={{ marginLeft: 'auto', position: 'relative', width: '68px', height: '68px' }}>
+  <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
+    <h1 className='cart' style={{ position: 'relative', margin: 0 }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" height="68" width="68">
+        <rect width="156" height="156" fill="none"></rect>
+        <circle cx="80" cy="216" r="12"></circle>
+        <circle cx="184" cy="216" r="12"></circle>
+        <path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+      </svg>
+      {/* Badge uprostred košíka */}
+      <span style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '20px',
+        pointerEvents: 'none' // aby sa klik na košík nedal prekazit
+      }}>{getCartItemCount()}</span>
+    </h1>
+  </a>
+</div>                </div>
             </div>
             {!showCart ? (
                 <div className="product-grid">
