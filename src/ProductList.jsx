@@ -277,6 +277,14 @@ function ProductList({ onHomeClick }) {
             ...prevState, [plant.name]: true,
         }));
     };
+
+    const handleRemoveFromCart = (plantName) => {
+        setAddedToCart(prev => {
+          const newState = { ...prev };
+          delete newState[plantName];
+          return newState;
+        });
+      };
         
     
     return (
@@ -342,8 +350,10 @@ function ProductList({ onHomeClick }) {
                                 <button
                                     className="product-button"
                                     onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
-                                >
-                                    Add to Cart
+                                    disabled={addedToCart[plant.name]}
+                                    style={{ opacity: addedToCart[plant.name] ? 0.5 : 1, cursor: addedToCart[plant.name] ? 'not-allowed' : 'pointer' }}
+                                    >
+                                      {addedToCart[plant.name] ? 'Added' : 'Add to Cart'}
                                 </button>
                                 </div>
                             ))}
@@ -353,7 +363,8 @@ function ProductList({ onHomeClick }) {
 
                 </div>
             ) : (
-                <CartItem onContinueShopping={handleContinueShopping} />
+                <CartItem onContinueShopping={handleContinueShopping}   onRemoveFromCart={handleRemoveFromCart} 
+                />
             )}
         </div>
     );
