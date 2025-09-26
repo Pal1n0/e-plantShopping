@@ -10,6 +10,22 @@ body {
     background-color: #f0f0f0;
 }
 
+h1 {
+    text-align: center;   /* vycentruje obsah vo vnútri h1 */
+  }
+  
+.category-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;        /* čierny text */
+  border-top: 2px solid black;     /* čiara hore */
+  border-bottom: 2px solid black;  /* čiara dole */
+  text-transform: uppercase;
+  padding: 10px 0;
+  display: inline-block; 
+  margin: 0 auto;  
+}
+
 /* Navbar */
 .navbar {
     background-color: #4CAF50;
